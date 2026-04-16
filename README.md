@@ -1,73 +1,23 @@
-# React + TypeScript + Vite
+🎓 3분 교수님 랭킹전 : 두더지 게임
+일정: 4월 13일 ~ 4월 18일 (영상 촬영 마감)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🎯 개발 핵심 목표
+3분(180초) 타임어택 방식.
 
-Currently, two official plugins are available:
+5단계 난이도 (36초마다 속도/노출 시간 급상승).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+교수님별 랭킹전 (게임 전 교수님 선택 필수).
 
-## React Compiler
+Firebase 실시간 리더보드 구현.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+👥 파트별 R&R (Role & Responsibility)
+A (Core): 5단계 스피드 로직, 3x3 랜덤 생성 엔진, 점수 체계.
 
-## Expanding the ESLint configuration
+B (Visual): Tailwind UI, Framer Motion 타격 애니메이션, 반응형 레이아웃.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+C (System): Firebase DB 연동, 사진 업로드/매핑, 사운드 에셋 관리.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+🛠 협업 규칙
+각자 이름으로 브랜치 생성 (feat/A-logic, feat/B-ui 등)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+16일(목)까지 기능 100% 완료 (디자인 미완성 상태여도 무관)
