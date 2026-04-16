@@ -26,6 +26,28 @@ export const saveRanking = async (
   return docRef.id;
 };
 
+// 교수님별 랭킹 조회
+export const fetchRankingsByProfessor = async (
+  professorId: string,
+  limitCount: number = 20
+): Promise<RankingEntry[]> => {
+  const q = query(
+    collection(db, COLLECTION),
+    where('professorId', '==', professorId),
+    orderBy('score', 'desc'),
+    limit(limitCount)
+  );
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((doc, idx) => ({
+    id: doc.id,
+    rank: idx + 1,
+    ...(doc.data() as Omit<RankingEntry, 'id' | 'rank'>),
+    createdAt: doc.data().createdAt?.toDate() ?? null,
+  }));
+};
+
 // 랭킹 목록 조회 (1회성)
 export const fetchRankings = async (
   filter: LeaderboardFilter = {}
@@ -49,15 +71,16 @@ export const fetchRankings = async (
   }));
 };
 
-// 실시간 랭킹 구독 (상위 20명)
+// 실시간 랭킹 구독
 export const subscribeToRankings = (
   filter: LeaderboardFilter = {},
   onUpdate: (entries: RankingEntry[]) => void
 ): Unsubscribe => {
-  const { limit: lim = 20, orderBy: ord = 'score' } = filter;
+  const { limit: lim = 20, orderBy: ord = 'score', professorId } = filter;
 
   const q = query(
     collection(db, COLLECTION),
+    ...(professorId ? [where('professorId', '==', professorId)] : []),
     orderBy(ord === 'score' ? 'score' : 'clearTime', ord === 'score' ? 'desc' : 'asc'),
     limit(lim)
   );
@@ -73,10 +96,11 @@ export const subscribeToRankings = (
   });
 };
 
-// 내 랭킹 순위 계산 (내 점수보다 높은 도큐먼트 수 + 1)
-export const getMyRank = async (myScore: number): Promise<number> => {
+// 내 랭킹 순위 계산
+export const getMyRank = async (myScore: number, professorId?: string): Promise<number> => {
   const q = query(
     collection(db, COLLECTION),
+    ...(professorId ? [where('professorId', '==', professorId)] : []),
     where('score', '>', myScore)
   );
   const snapshot = await getDocs(q);

@@ -2,12 +2,14 @@ export interface RankingEntry {
   id?: string;
   nickname: string;
   userId: string;
+  professorId: string;    // ← 추가
+  professorName: string;  // ← 추가
   score: number;
-  clearTime: number;        // 밀리초 단위
-  stageReached: number;     // 도달한 최고 스테이지
+  clearTime: number;
+  stageReached: number;
   stageResults: StageResult[];
   createdAt: Date | null;
-  rank?: number;            // 조회 시 계산되어 붙음
+  rank?: number;
 }
 
 export interface StageResult {
@@ -29,13 +31,15 @@ export interface GameSession {
 }
 
 export interface LeaderboardFilter {
-  stage?: number;           // 특정 스테이지 필터 (없으면 전체)
-  limit?: number;           // 가져올 개수 (기본 20)
+  stage?: number;
+  limit?: number;
   orderBy?: 'score' | 'clearTime';
+  professorId?: string;   // ← 추가
 }
-
 export interface GameResultPayload {
   nickname: string;
+  professorId: string;    // ← 추가
+  professorName: string;  // ← 추가
   totalScore: number;
   clearTime: number;
   stageReached: number;

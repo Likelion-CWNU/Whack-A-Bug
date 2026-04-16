@@ -17,6 +17,8 @@ export const submitGameResult = async (
   const entry: Omit<RankingEntry, 'id' | 'rank'> = {
     userId: user.uid,
     nickname: payload.nickname,
+    professorId: payload.professorId,
+    professorName: payload.professorName,
     score: payload.totalScore,
     clearTime: payload.clearTime,
     stageReached: payload.stageReached,
@@ -26,7 +28,7 @@ export const submitGameResult = async (
 
   const [rankingId, myRank] = await Promise.all([
     saveRanking(entry),
-    getMyRank(payload.totalScore),
+    getMyRank(payload.totalScore, payload.professorId),
   ]);
 
   return { rankingId, myRank, entry };

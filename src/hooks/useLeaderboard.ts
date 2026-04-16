@@ -16,8 +16,7 @@ export const useLeaderboard = (filter: LeaderboardFilter = {}) => {
     });
 
     return () => unsubscribe();
-  
-  }, [filter.limit, filter.orderBy, filter.stage]);
+  }, [filter.limit, filter.orderBy, filter.stage, filter.professorId]); // ← professorId 추가
 
   return { rankings, loading, error };
 };
