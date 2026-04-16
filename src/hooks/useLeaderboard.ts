@@ -5,7 +5,7 @@ import { subscribeToRankings } from '../services/rankingService';
 export const useLeaderboard = (filter: LeaderboardFilter = {}) => {
   const [rankings, setRankings] = useState<RankingEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
