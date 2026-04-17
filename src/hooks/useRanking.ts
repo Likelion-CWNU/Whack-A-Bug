@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
-import { submitGameResult, SaveResult } from '../services/gameResultservice';
-import { GameResultPayload } from '../types/ranking';
+import { submitGameResult } from '../services/gameResultservice';
+import type { SaveResult } from '../services/gameResultservice';
+import type { GameResultPayload } from '../types/ranking';
 
 export const useRanking = () => {
   const [submitting, setSubmitting] = useState(false);

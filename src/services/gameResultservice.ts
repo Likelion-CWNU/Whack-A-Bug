@@ -1,6 +1,6 @@
 import { getOrCreateUser } from './authService';
 import { saveRanking, getMyRank } from './rankingService';
-import { GameResultPayload, RankingEntry } from '../types/ranking';
+import type { GameResultPayload, RankingEntry } from '../types/ranking';
 
 export interface SaveResult {
   rankingId: string;
