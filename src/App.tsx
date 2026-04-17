@@ -1,121 +1,167 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import { useGameStore } from "./store/useGameStore";
+import { useGameLogic } from "./hooks/useGameLogic";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const {
+    score,
+    timeLeft,
+    level,
+    bugPosition,
+    gameStarted,
+    professor,
+    startGame,
+    hitBug,
+    missBug,
+    resetGame,
+  } = useGameStore();
+
+  useGameLogic();
+
+  const [selectedProfessor, setSelectedProfessor] = useState("");
+
+  const handleHoleClick = (index: number) => {
+    if (!gameStarted) return;
+    if (bugPosition === index) {
+      hitBug();
+    } else {
+      missBug();
+    }
+  };
+
+  const handleStartGame = () => {
+    if (selectedProfessor) {
+      startGame(selectedProfessor);
+    }
+  };
+
+  if (!gameStarted) {
+    return (
+      <div
+        className="start-screen"
+        style={{
+          textAlign: "center",
+          backgroundColor: "#1a202c",
+          color: "white",
+          minHeight: "100vh",
+          padding: "20px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>
+          Whack-A-Bug ??
+        </h1>
+        <p style={{ marginBottom: "20px" }}>교수님을 선택하세요:</p>
+        <select
+          value={selectedProfessor}
+          onChange={(e) => setSelectedProfessor(e.target.value)}
+          style={{
+            padding: "10px",
+            marginBottom: "20px",
+            fontSize: "1rem",
+            borderRadius: "5px",
+          }}
+        >
+          <option value="">선택</option>
+          <option value="김교수">김교수</option>
+          <option value="이교수">이교수</option>
+          <option value="박교수">박교수</option>
+        </select>
+        <button
+          onClick={handleStartGame}
+          disabled={!selectedProfessor}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: selectedProfessor ? "#3182ce" : "#4a5568",
+            borderRadius: "5px",
+            border: "none",
+            color: "white",
+            fontWeight: "bold",
+            cursor: selectedProfessor ? "pointer" : "not-allowed",
+          }}
+        >
+          게임 시작
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <div
+      className="game-container"
+      style={{
+        textAlign: "center",
+        backgroundColor: "#1a202c",
+        color: "white",
+        minHeight: "100vh",
+        padding: "20px",
+      }}
+    >
+      <header>
+        <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>Whack-A-Bug ??</h1>
+        <div
+          className="status"
+          style={{ margin: "20px 0", fontSize: "1.2rem" }}
         >
-          Count is {count}
+          <p>교수님: {professor}</p>
+          <p>
+            현재 점수: <span style={{ color: "#ecc94b" }}>{score}</span>
+          </p>
+          <p>남은 시간: {timeLeft}초</p>
+          <p>레벨: {level}</p>
+        </div>
+      </header>
+
+      <main
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "10px",
+          maxWidth: "300px",
+          margin: "0 auto",
+        }}
+      >
+        {[...Array(9)].map((_, i) => (
+          <div
+            key={i}
+            onClick={() => handleHoleClick(i)}
+            style={{
+              width: "80px",
+              height: "80px",
+              backgroundColor: "#2d3748",
+              borderRadius: "10px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "2rem",
+            }}
+          >
+            {bugPosition === i ? "??" : "??"}
+          </div>
+        ))}
+      </main>
+
+      <footer style={{ marginTop: "30px" }}>
+        <button
+          onClick={resetGame}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#3182ce",
+            borderRadius: "5px",
+            border: "none",
+            color: "white",
+            fontWeight: "bold",
+          }}
+        >
+          게임 리셋
         </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
