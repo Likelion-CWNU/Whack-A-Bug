@@ -8,15 +8,13 @@ export const useLeaderboard = (filter: LeaderboardFilter = {}) => {
   const [error] = useState<string | null>(null);
 
   useEffect(() => {
-    setLoading(true);
-
     const unsubscribe = subscribeToRankings(filter, (entries) => {
       setRankings(entries);
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [filter.limit, filter.orderBy, filter.stage, filter.professorId]); // ← professorId 추가
+  }, [filter]); // filter 객체를 의존성에 추가
 
   return { rankings, loading, error };
 };
