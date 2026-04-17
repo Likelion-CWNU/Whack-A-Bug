@@ -8,10 +8,10 @@ import {
   where,
   serverTimestamp,
   onSnapshot,
-  Unsubscribe,
 } from 'firebase/firestore';
+import type { Unsubscribe } from 'firebase/firestore';
 import { db } from './firebase';
-import { RankingEntry, LeaderboardFilter } from '../types/ranking';
+import type { RankingEntry, LeaderboardFilter } from '../types/ranking';
 
 const COLLECTION = 'rankings';
 

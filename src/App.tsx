@@ -1,4 +1,4 @@
-import { useState } from "react";
+ï»¿import { useState } from "react";
 import { useGameStore } from "./store/useGameStore";
 import { useGameLogic } from "./hooks/useGameLogic";
 
@@ -52,9 +52,9 @@ function App() {
         }}
       >
         <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>
-          Whack-A-Bug ??
+          Whack-A-Bug ðŸŽ“
         </h1>
-        <p style={{ marginBottom: "20px" }}>±³¼ö´ÔÀ» ¼±ÅÃÇÏ¼¼¿ä:</p>
+        <p style={{ marginBottom: "20px" }}>êµìˆ˜ë‹˜ì„ ì„ íƒí•˜ì„¸ìš”:</p>
         <select
           value={selectedProfessor}
           onChange={(e) => setSelectedProfessor(e.target.value)}
@@ -65,10 +65,10 @@ function App() {
             borderRadius: "5px",
           }}
         >
-          <option value="">¼±ÅÃ</option>
-          <option value="±è±³¼ö">±è±³¼ö</option>
-          <option value="ÀÌ±³¼ö">ÀÌ±³¼ö</option>
-          <option value="¹Ú±³¼ö">¹Ú±³¼ö</option>
+          <option value="">ì„ íƒ</option>
+          <option value="ê¹€êµìˆ˜">ê¹€êµìˆ˜</option>
+          <option value="ì´êµìˆ˜">ì´êµìˆ˜</option>
+          <option value="ë°•êµìˆ˜">ë°•êµìˆ˜</option>
         </select>
         <button
           onClick={handleStartGame}
@@ -83,7 +83,7 @@ function App() {
             cursor: selectedProfessor ? "pointer" : "not-allowed",
           }}
         >
-          °ÔÀÓ ½ÃÀÛ
+          ê²Œìž„ ì‹œìž‘
         </button>
       </div>
     );
@@ -101,17 +101,17 @@ function App() {
       }}
     >
       <header>
-        <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>Whack-A-Bug ??</h1>
+        <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>Whack-A-Bug ðŸŽ“</h1>
         <div
           className="status"
           style={{ margin: "20px 0", fontSize: "1.2rem" }}
         >
-          <p>±³¼ö´Ô: {professor}</p>
+          <p>êµìˆ˜ë‹˜: {professor}</p>
           <p>
-            ÇöÀç Á¡¼ö: <span style={{ color: "#ecc94b" }}>{score}</span>
+            í˜„ìž¬ ì ìˆ˜: <span style={{ color: "#ecc94b" }}>{score}</span>
           </p>
-          <p>³²Àº ½Ã°£: {timeLeft}ÃÊ</p>
-          <p>·¹º§: {level}</p>
+          <p>ë‚¨ì€ ì‹œê°„: {timeLeft}ì´ˆ</p>
+          <p>ë ˆë²¨: {level}</p>
         </div>
       </header>
 
@@ -140,7 +140,7 @@ function App() {
               fontSize: "2rem",
             }}
           >
-            {bugPosition === i ? "??" : "??"}
+            {bugPosition === i ? "ðŸ›" : "ðŸŽ¯"}
           </div>
         ))}
       </main>
@@ -157,7 +157,7 @@ function App() {
             fontWeight: "bold",
           }}
         >
-          °ÔÀÓ ¸®¼Â
+          ê²Œìž„ ë¦¬ì…‹
         </button>
       </footer>
     </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { RankingEntry, LeaderboardFilter } from '../types/ranking';
+import type { RankingEntry, LeaderboardFilter } from '../types/ranking';
 import { subscribeToRankings } from '../services/rankingService';
 
 export const useLeaderboard = (filter: LeaderboardFilter = {}) => {

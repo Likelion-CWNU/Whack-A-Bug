@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { GameSession, StageResult } from '../types/ranking';
+import type { GameSession, StageResult } from '../types/ranking';
 import { getCurrentUserId } from '../services/authService';
 
 export const useGameSession = () => {

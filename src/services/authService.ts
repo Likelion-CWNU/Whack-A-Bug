@@ -2,7 +2,7 @@ import { auth } from './firebase';
 import {
   signInAnonymously,
   onAuthStateChanged,
-  User,
+  type User,
 } from 'firebase/auth';
 
 // 현재 유저 가져오기 (없으면 익명 로그인)

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import type { Score } from '../types/Score';
-import { saveScore } from '../services/rankingService';
+import type { RankingEntry } from '../types/ranking';
+import { saveRanking } from '../services/rankingService';
 
 interface GameState {
   score: number;
@@ -57,12 +57,17 @@ export const useGameStore = create<GameState>((set) => ({
       const newLevel = Math.floor((INITIAL_TIME - newTime) / LEVEL_INTERVAL) + 1;
       if (newTime <= 0) {
         if (state.professor) {
-          const scoreData: Score = {
-            professor: state.professor,
+          const rankingData: Omit<RankingEntry, 'id' | 'createdAt' | 'rank'> = {
+            professorId: state.professor,
+            professorName: state.professor,
             score: state.score,
-            timestamp: new Date(),
+            clearTime: INITIAL_TIME - newTime,
+            stageReached: state.level,
+            stageResults: [],
+            userId: 'current-user',
+            nickname: 'Player',
           };
-          saveScore(scoreData);
+          saveRanking(rankingData);
         }
         return { timeLeft: 0, gameStarted: false };
       }
