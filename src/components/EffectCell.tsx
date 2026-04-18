@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import mole from "../assets/mole.png";
 
+// 1. professorPhoto 추가
 type Props = {
   onHit: () => void;
   isActive: boolean;
@@ -20,7 +21,6 @@ export default function EffectCell({ onHit, isActive }: Props) {
     setLabel(randomLabel);
     setHit(true);
     onHit();
-
     setTimeout(() => {
       setHit(false);
     }, 260);
@@ -97,57 +97,35 @@ export default function EffectCell({ onHit, isActive }: Props) {
 
       {/* 임팩트 텍스트 */}
       <AnimatePresence>
-  {hit && (
-    <motion.div
-      key={label}
-      initial={{
-        opacity: 0,
-        scale: 1.22,
-        rotate: -12,
-      }}
-      animate={{
-        opacity: 0.95,
-        scale: 1,
-        rotate: -12,
-      }}
-      exit={{
-        opacity: 0,
-        scale: 0.95,
-        rotate: -12,
-      }}
-      transition={{
-        duration: 0.18,
-        ease: "easeOut",
-      }}
-      style={{
-        position: "absolute",
-        top: "4px",
-        right: "-4px",
-
-        fontSize: "10px",
-        fontWeight: 900,
-        letterSpacing: "0.35px",
-
-        color: "#dc2626",
-        border: "2px solid #dc2626",
-
-        padding: "3px 6px",
-        borderRadius: "4px",
-
-        backgroundColor: "rgba(255,255,255,0.78)",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.14)",
-
-        pointerEvents: "none",
-        zIndex: 5,
-        lineHeight: 1,
-      }}
-    >
-      {label}
-    </motion.div>
-  )}
-</AnimatePresence>
-
-
+        {hit && (
+          <motion.div
+            key={label}
+            initial={{ opacity: 0, scale: 1.22, rotate: -12 }}
+            animate={{ opacity: 0.95, scale: 1, rotate: -12 }}
+            exit={{ opacity: 0, scale: 0.95, rotate: -12 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            style={{
+              position: "absolute",
+              top: "4px",
+              right: "-4px",
+              fontSize: "10px",
+              fontWeight: 900,
+              letterSpacing: "0.35px",
+              color: "#dc2626",
+              border: "2px solid #dc2626",
+              padding: "3px 6px",
+              borderRadius: "4px",
+              backgroundColor: "rgba(255,255,255,0.78)",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.14)",
+              pointerEvents: "none",
+              zIndex: 5,
+              lineHeight: 1,
+            }}
+          >
+            {label}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

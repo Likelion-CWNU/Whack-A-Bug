@@ -29,6 +29,7 @@ const randomBetween = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 function App() {
+  // ── 기존 코드 그대로 ──
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(180);
   const [isRunning, setIsRunning] = useState(false);
@@ -44,17 +45,16 @@ function App() {
 
   useEffect(() => {
     if (!isRunning) return;
-
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           setIsRunning(false);
+          setScreen("result-modal"); // 시간 종료 → 결과 화면
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-
     return () => clearInterval(timer);
   }, [isRunning]);
 
@@ -178,24 +178,61 @@ function App() {
         ))}
       </main>
 
-      <footer style={{ marginTop: "30px" }}>
-        <button
-          onClick={resetGame}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#3182ce",
-            borderRadius: "5px",
-            border: "none",
-            color: "white",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          게임 리셋
-        </button>
-      </footer>
-    </div>
-  );
+        <footer style={{ marginTop: "30px" }}>
+          <button
+            onClick={resetGame}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#3182ce",
+              borderRadius: "5px",
+              border: "none",
+              color: "white",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            다시하기
+          </button>
+        </footer>
+
+        <div className="main-ground" />
+      </div>
+    );
+  }
+
+  // ── 결과 팝업 ──
+  if (screen === "result-modal") {
+    return (
+      <div className="game-container main-screen">
+        <div className="main-ground" />
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h2 className="modal-title">게임종료</h2>
+            <div className="result-score">
+              최종 점수: <strong style={{ color: "#ffd700" }}>{score}</strong>점
+            </div>
+            <p className="modal-desc">닉네임을 입력하고 랭킹을 등록하세요!</p>
+            <input
+              className="nickname-input"
+              type="text"
+              placeholder="닉네임 입력"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              maxLength={10}
+            />
+            <div className="modal-buttons">
+              <button className="btn-secondary" onClick={handleRestart}>
+                나가기
+              </button>
+              <button className="btn-primary" disabled={!nickname.trim()}>
+                등록하기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;

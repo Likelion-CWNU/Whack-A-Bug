@@ -1,111 +1,249 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+/* ── 공통 ── */
+.game-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  position: relative;
+  font-family: "Press Start 2P", monospace;
 }
 
-body {
-  margin: 0;
+/* ── 메인 / 팝업 배경 ── */
+.main-screen {
+  background: #efefef;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* ── 게임 배경 ── */
+.game-screen {
+  background: #d6f6fe;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+/* ── 언덕 ── */
+.main-ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 42%;
+  background: #439658;
+  border-radius: 100% 100% 0 0 / 60px 60px 0 0;
+  z-index: 0;
 }
-h2 {
+
+/* ── 상단 바 ── */
+.main-top,
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 28px;
+  z-index: 10;
+}
+
+.score-display {
+  font-size: 13px;
+  color: black;
+  letter-spacing: 1px;
+}
+
+.hearts {
+  display: flex;
+  gap: 6px;
+  font-size: 22px;
+}
+
+/* ── PLAY 버튼 ── */
+.main-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.play-btn {
+  font-family: "Press Start 2P", monospace;
   font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+  color: #fff;
+  background: #555;
+  border: none;
+  padding: 18px 52px;
+  cursor: pointer;
+  letter-spacing: 3px;
+  box-shadow: 4px 4px 0 #222, -2px -2px 0 #888 inset;
+  transition: transform 0.08s, box-shadow 0.08s;
 }
-p {
-  margin: 0;
+.play-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 #222, -2px -2px 0 #999 inset;
+}
+.play-btn:active {
+  transform: translateY(2px);
+  box-shadow: 2px 2px 0 #111;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+/* ── 타임바 ── */
+.time-bar-wrap {
+  height: 6px;
+  background: #333;
+  margin: 0 28px 16px;
+  border-radius: 3px;
+  overflow: hidden;
+  z-index: 10;
+}
+.time-bar {
+  height: 100%;
+  background: #4caf50;
+  transition: width 1s linear;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* ── 모달 ── */
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-box {
+  background: #111;
+  border: 3px solid #fff;
+  padding: 36px 32px;
+  width: min(400px, 88vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 8px 8px 0 #000;
+  color: white;
+}
+
+.modal-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: 14px;
+  color: white;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.modal-desc {
+  font-size: 11px;
+  color: #aaa;
+  text-align: center;
+  font-family: sans-serif;
+  line-height: 1.6;
+}
+
+/* ── 사진 업로드 ── */
+.photo-upload-area {
+  width: 150px;
+  height: 150px;
+  border: 3px dashed #555;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  background: #0a0a0a;
+  transition: border-color 0.2s;
+}
+.photo-upload-area:hover {
+  border-color: #fff;
+}
+
+.photo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #555;
+  font-size: 11px;
+  font-family: sans-serif;
+}
+
+/* ── 버튼 ── */
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.btn-primary {
+  flex: 1;
+  padding: 12px;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  font-family: "Press Start 2P", monospace;
+  font-size: 9px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #7a0000;
+  letter-spacing: 1px;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 #7a0000;
+}
+.btn-primary:disabled {
+  background: #444;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  flex: 1;
+  padding: 12px;
+  background: #222;
+  color: #aaa;
+  border: 2px solid #444;
+  font-family: "Press Start 2P", monospace;
+  font-size: 9px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+.btn-secondary:hover {
+  background: #333;
+  color: white;
+}
+
+/* ── 결과 ── */
+.result-score {
+  font-size: 13px;
+  color: white;
+  font-family: sans-serif;
+}
+
+.nickname-input {
+  width: 100%;
+  padding: 12px;
+  background: #0a0a0a;
+  border: 2px solid #444;
+  color: white;
+  font-size: 14px;
+  font-family: sans-serif;
+  text-align: center;
+  outline: none;
+}
+.nickname-input:focus {
+  border-color: #e53e3e;
 }
