@@ -1,12 +1,29 @@
 import EffectCell from "./components/EffectCell";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
 const BOARD_SIZE = 9;
-const VISIBLE_MIN_MS = 750;
-const VISIBLE_MAX_MS = 1000;
-const HIDDEN_MIN_MS = 250;
-const HIDDEN_MAX_MS = 900;
+
+/** 점수 구간별 스테이지 (임시: 50·100·150·200 돌파 시 +1) */
+function getStageFromScore(score: number): 1 | 2 | 3 | 4 | 5 {
+  if (score >= 200) return 5;
+  if (score >= 150) return 4;
+  if (score >= 100) return 3;
+  if (score >= 50) return 2;
+  return 1;
+}
+
+/** 스테이지별 두더지 보이는 시간 / 숨는 시간(ms) — 상위 스테이지일수록 짧게(어렵게) */
+const STAGE_TIMING: Record<
+  1 | 2 | 3 | 4 | 5,
+  { visibleMin: number; visibleMax: number; hiddenMin: number; hiddenMax: number }
+> = {
+  1: { visibleMin: 850, visibleMax: 1150, hiddenMin: 250, hiddenMax: 900 },
+  2: { visibleMin: 750, visibleMax: 1000, hiddenMin: 220, hiddenMax: 800 },
+  3: { visibleMin: 700, visibleMax: 950, hiddenMin: 200, hiddenMax: 700 },
+  4: { visibleMin: 650, visibleMax: 900, hiddenMin: 180, hiddenMax: 600 },
+  5: { visibleMin: 600, visibleMax: 850, hiddenMin: 150, hiddenMax: 500 },
+};
 
 const randomBetween = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -16,6 +33,8 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(180);
   const [isRunning, setIsRunning] = useState(false);
   const [activeMoleIndex, setActiveMoleIndex] = useState<number | null>(null);
+
+  const stage = useMemo(() => getStageFromScore(score), [score]);
 
   const handleScore = (index: number) => {
     if (!isRunning || timeLeft <= 0 || activeMoleIndex !== index) return;
@@ -49,16 +68,18 @@ function App() {
     let showTimeout: ReturnType<typeof setTimeout> | null = null;
     let hideTimeout: ReturnType<typeof setTimeout> | null = null;
 
+    const timing = STAGE_TIMING[stage];
+
     const scheduleMole = () => {
       if (cancelled) return;
 
-      const hiddenDelay = randomBetween(HIDDEN_MIN_MS, HIDDEN_MAX_MS);
+      const hiddenDelay = randomBetween(timing.hiddenMin, timing.hiddenMax);
       showTimeout = setTimeout(() => {
         if (cancelled) return;
 
         setActiveMoleIndex(Math.floor(Math.random() * BOARD_SIZE));
 
-        const visibleDelay = randomBetween(VISIBLE_MIN_MS, VISIBLE_MAX_MS);
+        const visibleDelay = randomBetween(timing.visibleMin, timing.visibleMax);
         hideTimeout = setTimeout(() => {
           if (cancelled) return;
           setActiveMoleIndex(null);
@@ -74,7 +95,7 @@ function App() {
       if (showTimeout) clearTimeout(showTimeout);
       if (hideTimeout) clearTimeout(hideTimeout);
     };
-  }, [isRunning]);
+  }, [isRunning, stage]);
 
   const startGame = () => {
     if (timeLeft <= 0) {
@@ -110,6 +131,12 @@ function App() {
         >
           <p>
             현재 점수: <span style={{ color: "#ecc94b" }}>{score}</span>
+          </p>
+          <p>
+            스테이지:{" "}
+            <span style={{ color: "#63b3ed" }}>
+              {stage} / 5
+            </span>
           </p>
           <p>남은 시간: {timeLeft}초</p>
           {!isRunning && timeLeft > 0 && (
