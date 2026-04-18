@@ -1,93 +1,18 @@
-﻿import { useState } from "react";
-import { useGameStore } from "./store/useGameStore";
-import { useGameLogic } from "./hooks/useGameLogic";
+import EffectCell from "./components/EffectCell";
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
-  const {
-    score,
-    timeLeft,
-    level,
-    bugPosition,
-    gameStarted,
-    professor,
-    startGame,
-    hitBug,
-    missBug,
-    resetGame,
-  } = useGameStore();
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(180); // 3분
 
-  useGameLogic();
-
-  const [selectedProfessor, setSelectedProfessor] = useState("");
-
-  const handleHoleClick = (index: number) => {
-    if (!gameStarted) return;
-    if (bugPosition === index) {
-      hitBug();
-    } else {
-      missBug();
-    }
+  // 점수를 올리는 함수 (setScore 사용!)
+  const handleScore = () => {
+    setScore((prev) => prev + 10);
   };
 
-  const handleStartGame = () => {
-    if (selectedProfessor) {
-      startGame(selectedProfessor);
-    }
-  };
-
-  if (!gameStarted) {
-    return (
-      <div
-        className="start-screen"
-        style={{
-          textAlign: "center",
-          backgroundColor: "#1a202c",
-          color: "white",
-          minHeight: "100vh",
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>
-          Whack-A-Bug 🎓
-        </h1>
-        <p style={{ marginBottom: "20px" }}>교수님을 선택하세요:</p>
-        <select
-          value={selectedProfessor}
-          onChange={(e) => setSelectedProfessor(e.target.value)}
-          style={{
-            padding: "10px",
-            marginBottom: "20px",
-            fontSize: "1rem",
-            borderRadius: "5px",
-          }}
-        >
-          <option value="">선택</option>
-          <option value="김교수">김교수</option>
-          <option value="이교수">이교수</option>
-          <option value="박교수">박교수</option>
-        </select>
-        <button
-          onClick={handleStartGame}
-          disabled={!selectedProfessor}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: selectedProfessor ? "#3182ce" : "#4a5568",
-            borderRadius: "5px",
-            border: "none",
-            color: "white",
-            fontWeight: "bold",
-            cursor: selectedProfessor ? "pointer" : "not-allowed",
-          }}
-        >
-          게임 시작
-        </button>
-      </div>
-    );
-  }
+  // 타이머를 줄이는 로직 (나중에 A님이 구체화할 예정, 우선 선언만)
+  // setTimeLeft(179);
 
   return (
     <div
@@ -96,7 +21,7 @@ function App() {
         textAlign: "center",
         backgroundColor: "#1a202c",
         color: "white",
-        minHeight: "100vh",
+        minHeight: "screen",
         padding: "20px",
       }}
     >
@@ -106,15 +31,14 @@ function App() {
           className="status"
           style={{ margin: "20px 0", fontSize: "1.2rem" }}
         >
-          <p>교수님: {professor}</p>
           <p>
             현재 점수: <span style={{ color: "#ecc94b" }}>{score}</span>
           </p>
           <p>남은 시간: {timeLeft}초</p>
-          <p>레벨: {level}</p>
         </div>
       </header>
 
+      {/* 9개 구멍 그리드 */}
       <main
         style={{
           display: "grid",
@@ -125,29 +49,13 @@ function App() {
         }}
       >
         {[...Array(9)].map((_, i) => (
-          <div
-            key={i}
-            onClick={() => handleHoleClick(i)}
-            style={{
-              width: "80px",
-              height: "80px",
-              backgroundColor: "#2d3748",
-              borderRadius: "10px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "2rem",
-            }}
-          >
-            {bugPosition === i ? "🐛" : "🎯"}
-          </div>
+          <EffectCell key={i} onHit={handleScore} />
         ))}
       </main>
 
       <footer style={{ marginTop: "30px" }}>
         <button
-          onClick={resetGame}
+          onClick={() => setTimeLeft(180)} // 리셋 버튼으로 setTimeLeft 사용!
           style={{
             padding: "10px 20px",
             backgroundColor: "#3182ce",
@@ -157,7 +65,7 @@ function App() {
             fontWeight: "bold",
           }}
         >
-          게임 리셋
+          게임 리셋 (시간 초기화)
         </button>
       </footer>
     </div>
