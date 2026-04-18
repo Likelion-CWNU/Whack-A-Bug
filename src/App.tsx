@@ -1,18 +1,42 @@
 import EffectCell from "./components/EffectCell";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(180); // 3분
+  const [timeLeft, setTimeLeft] = useState(180);
+  const [isRunning, setIsRunning] = useState(false);
 
-  // 점수를 올리는 함수 (setScore 사용!)
   const handleScore = () => {
+    if (!isRunning || timeLeft <= 0) return;
     setScore((prev) => prev + 10);
   };
 
-  // 타이머를 줄이는 로직 (나중에 A님이 구체화할 예정, 우선 선언만)
-  // setTimeLeft(179);
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          setIsRunning(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isRunning]);
+
+  const startGame = () => {
+    setIsRunning(true);
+  };
+
+  const resetGame = () => {
+    setScore(0);
+    setTimeLeft(180);
+    setIsRunning(false);
+  };
 
   return (
     <div
@@ -35,10 +59,27 @@ function App() {
             현재 점수: <span style={{ color: "#ecc94b" }}>{score}</span>
           </p>
           <p>남은 시간: {timeLeft}초</p>
+          {!isRunning && timeLeft > 0 && (
+            <button
+              onClick={startGame}
+              style={{
+                marginTop: "12px",
+                marginRight: "8px",
+                padding: "10px 20px",
+                backgroundColor: "#16a34a",
+                borderRadius: "5px",
+                border: "none",
+                color: "white",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              게임 시작
+            </button>
+          )}
         </div>
       </header>
 
-      {/* 9개 구멍 그리드 */}
       <main
         style={{
           display: "grid",
@@ -55,7 +96,7 @@ function App() {
 
       <footer style={{ marginTop: "30px" }}>
         <button
-          onClick={() => setTimeLeft(180)} // 리셋 버튼으로 setTimeLeft 사용!
+          onClick={resetGame}
           style={{
             padding: "10px 20px",
             backgroundColor: "#3182ce",
@@ -63,9 +104,10 @@ function App() {
             border: "none",
             color: "white",
             fontWeight: "bold",
+            cursor: "pointer",
           }}
         >
-          게임 리셋 (시간 초기화)
+          게임 리셋
         </button>
       </footer>
     </div>
