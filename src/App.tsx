@@ -1,5 +1,5 @@
 import EffectCell from "./components/EffectCell";
-import React, { useState } from "react";
+import { useState } from "react";
 import "./App.css";
 
 function App() {
