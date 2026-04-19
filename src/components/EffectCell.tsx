@@ -15,7 +15,8 @@ export default function EffectCell({ onHit, isActive, professorPhoto }: Props) {
   const [hit, setHit] = useState(false);
   const [label, setLabel] = useState("");
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!isActive) return;
     const randomLabel = LABELS[Math.floor(Math.random() * LABELS.length)];
     setLabel(randomLabel);

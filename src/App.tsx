@@ -79,9 +79,23 @@ function App() {
   const stage = useMemo(() => getStageFromScore(score), [score]);
 
   const handleScore = (index: number) => {
-    if (!isRunning || timeLeft <= 0 || activeMoleIndex !== index) return;
-    setScore((prev) => prev + 10);
-    setActiveMoleIndex(null);
+    if (!isRunning || timeLeft <= 0) return;
+    
+    if (activeMoleIndex === index) {
+      // 두더지 클릭 성공 → 점수 추가
+      setScore((prev) => prev + 10);
+      setActiveMoleIndex(null);
+    } else {
+      // 엉뚱한 곳 클릭 → 피 깎기
+      setLives((l) => {
+        const next = l - 1;
+        if (next <= 0) {
+          setIsRunning(false);
+          setScreen("result-modal");
+        }
+        return next;
+      });
+    }
   };
 
   // 타이머
@@ -281,7 +295,18 @@ function App() {
   // ── 게임 화면 ──
   if (screen === "game") {
     return (
-      <div className="game-container game-screen">
+      <div className="game-container game-screen" onClick={() => {
+          if (isRunning && activeMoleIndex !== null) {
+            setLives((l) => {
+              const next = l - 1;
+              if (next <= 0) {
+                setIsRunning(false);
+                setScreen("result-modal");
+              }
+              return next;
+            });
+          }
+        }}>
         <header className="game-header">
           <span className="score-display">Score: {score}</span>
           <Hearts lives={lives} />
