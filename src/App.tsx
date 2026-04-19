@@ -186,9 +186,7 @@ function App() {
       const rows = await fetchRankings({ limit: 3, orderBy: "score" });
       setTopRankings(rows);
     } catch (e) {
-      setRegisterError(
-        e instanceof Error ? e.message : "등록에 실패했습니다."
-      );
+      setRegisterError(e instanceof Error ? e.message : "등록에 실패했습니다.");
     } finally {
       setRegisterSubmitting(false);
     }
@@ -249,7 +247,7 @@ function App() {
           <div className="modal-box">
             <h2 className="modal-title">교수님 사진 등록</h2>
             <p className="modal-desc">
-              두더지에 적용될 교수님 사진을 올려주세요!
+              두더지에 적용될 교수님 사진을 올려주세요
             </p>
             <div
               className="photo-upload-area"
@@ -283,7 +281,7 @@ function App() {
                 취소
               </button>
               <button className="btn-primary" onClick={handleStartGame}>
-                게임 시작!
+                게임시작
               </button>
             </div>
           </div>
@@ -364,8 +362,8 @@ function App() {
                         {topRankings === null
                           ? ""
                           : row !== undefined
-                            ? `${row.score}`
-                            : "—"}
+                          ? `${row.score}`
+                          : "—"}
                       </span>
                     </div>
                   </div>
@@ -403,9 +401,7 @@ function App() {
                 type="button"
                 onClick={handleSubmitRanking}
                 disabled={
-                  !nickname.trim() ||
-                  registerSubmitting ||
-                  registerDone
+                  !nickname.trim() || registerSubmitting || registerDone
                 }
               >
                 {registerSubmitting ? "등록 중…" : "등록하기"}
