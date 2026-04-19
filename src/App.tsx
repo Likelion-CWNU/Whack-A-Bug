@@ -9,9 +9,7 @@ import "./App.css";
 const BOARD_SIZE = 9;
 
 type Screen = "main" | "photo-modal" | "game" | "result-modal";
-
 type Stage = 1 | 2 | 3 | 4 | 5;
-
 type StageTiming = {
   visibleMin: number;
   visibleMax: number;
@@ -161,8 +159,20 @@ function App() {
     setScreen("main");
   };
 
+  // 팀원한테 firebaseConfig 받으면 아래 주석 해제하고 firebase.ts 만들기
+  const handleRegister = async () => {
+    // const { db } = await import("./firebase");
+    // const { collection, addDoc } = await import("firebase/firestore");
+    // await addDoc(collection(db, "rankings"), {
+    //   nickname,
+    //   score,
+    //   createdAt: new Date(),
+    // });
+    alert(`${nickname}님의 점수 ${score}점이 등록되었습니다!`); // 임시
+    handleRestart();
+  };
+
   // ── 메인 화면 ──
-  // 메인 화면
   if (screen === "main") {
     return (
       <div className="game-container main-screen">
@@ -180,12 +190,11 @@ function App() {
     );
   }
 
+  // ── 교수님 사진 팝업 ──
   if (screen === "photo-modal") {
     return (
       <div className="game-container main-screen">
         <div className="main-top">
-          {" "}
-          {/* ← 추가 */}
           <span className="score-display">Score: 0</span>
           <Hearts />
         </div>
@@ -275,6 +284,10 @@ function App() {
   if (screen === "result-modal") {
     return (
       <div className="game-container main-screen">
+        <div className="main-top">
+          <span className="score-display">Score: {score}</span>
+          <Hearts lives={lives} />
+        </div>
         <div className="main-ground" />
         <div className="modal-overlay">
           <div className="modal-box">
@@ -295,7 +308,11 @@ function App() {
               <button className="btn-secondary" onClick={handleRestart}>
                 나가기
               </button>
-              <button className="btn-primary" disabled={!nickname.trim()}>
+              <button
+                className="btn-primary"
+                disabled={!nickname.trim()}
+                onClick={handleRegister}
+              >
                 등록하기
               </button>
             </div>
