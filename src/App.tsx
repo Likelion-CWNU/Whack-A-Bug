@@ -1,5 +1,8 @@
 import EffectCell from "./components/EffectCell";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { fetchRankings } from "./services/rankingService";
+import { submitGameResult } from "./services/gameResultservice";
+import type { RankingEntry } from "./types/ranking";
 import playImg from "./assets/play.png";
 import heartFull from "./assets/heart_full.png";
 import heartEmpty from "./assets/heart_empty.png";
@@ -7,6 +10,11 @@ import devilImg from "./assets/devil.png";
 import "./App.css";
 
 const BOARD_SIZE = 9;
+const INITIAL_TIME_SEC = 180;
+
+/** 교수 선택 UI가 없을 때 랭킹 저장용 기본값 (나중에 교수 목록과 연동 가능) */
+const DEFAULT_PROFESSOR_ID = "default";
+const DEFAULT_PROFESSOR_NAME = "교수님";
 
 type Screen = "main" | "photo-modal" | "game" | "result-modal";
 
@@ -56,12 +64,16 @@ function Hearts({ lives = 3 }: { lives?: number }) {
 function App() {
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
-  const [timeLeft, setTimeLeft] = useState(180);
+  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_SEC);
   const [isRunning, setIsRunning] = useState(false);
   const [activeMoleIndex, setActiveMoleIndex] = useState<number | null>(null);
   const [screen, setScreen] = useState<Screen>("main");
   const [professorPhoto, setProfessorPhoto] = useState<string | null>(null);
   const [nickname, setNickname] = useState("");
+  const [topRankings, setTopRankings] = useState<RankingEntry[] | null>(null);
+  const [registerSubmitting, setRegisterSubmitting] = useState(false);
+  const [registerError, setRegisterError] = useState<string | null>(null);
+  const [registerDone, setRegisterDone] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const stage = useMemo(() => getStageFromScore(score), [score]);
@@ -134,10 +146,58 @@ function App() {
     };
   }, [isRunning, stage]);
 
+  useEffect(() => {
+    if (screen !== "result-modal") {
+      setTopRankings(null);
+      return;
+    }
+    setRegisterError(null);
+    setRegisterDone(false);
+    let cancelled = false;
+    fetchRankings({ limit: 3, orderBy: "score" })
+      .then((rows) => {
+        if (!cancelled) setTopRankings(rows);
+      })
+      .catch(() => {
+        if (!cancelled) setTopRankings([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [screen]);
+
+  const handleSubmitRanking = async () => {
+    const nick = nickname.trim();
+    if (!nick || registerSubmitting || registerDone) return;
+
+    setRegisterSubmitting(true);
+    setRegisterError(null);
+    try {
+      await submitGameResult({
+        nickname: nick,
+        professorId: DEFAULT_PROFESSOR_ID,
+        professorName: DEFAULT_PROFESSOR_NAME,
+        totalScore: score,
+        clearTime: INITIAL_TIME_SEC - timeLeft,
+        stageReached: stage,
+        stageResults: [],
+      });
+      setRegisterDone(true);
+      const rows = await fetchRankings({ limit: 3, orderBy: "score" });
+      setTopRankings(rows);
+    } catch (e) {
+      setRegisterError(
+        e instanceof Error ? e.message : "등록에 실패했습니다."
+      );
+    } finally {
+      setRegisterSubmitting(false);
+    }
+  };
+
   const resetGame = () => {
     setScore(0);
     setLives(3);
-    setTimeLeft(180);
+    setTimeLeft(INITIAL_TIME_SEC);
     setIsRunning(false);
     setActiveMoleIndex(null);
   };
@@ -243,7 +303,7 @@ function App() {
         <div className="time-bar-wrap">
           <div
             className="time-bar"
-            style={{ width: `${(timeLeft / 180) * 100}%` }}
+            style={{ width: `${(timeLeft / INITIAL_TIME_SEC) * 100}%` }}
           />
         </div>
         <img src={devilImg} alt="devil" className="devil-img" />
@@ -267,32 +327,88 @@ function App() {
     );
   }
 
-  // ── 결과 팝업 ──
+  // ── 결과 / 랭킹 모달 (게임 종료 시) ──
   if (screen === "result-modal") {
+    const medals = ["🥇", "🥈", "🥉"];
     return (
       <div className="game-container main-screen">
         <div className="main-ground" />
-        <div className="modal-overlay">
-          <div className="modal-box">
-            <h2 className="modal-title">게임종료</h2>
-            <div className="result-score">
-              최종 점수: <strong style={{ color: "#ffd700" }}>{score}</strong>점
+        <div className="modal-overlay ranking-modal-overlay">
+          <div className="ranking-modal">
+            <button
+              type="button"
+              className="ranking-close"
+              onClick={handleRestart}
+              aria-label="닫기"
+            >
+              ×
+            </button>
+            <h2 className="ranking-modal-title">랭킹</h2>
+            <p className="ranking-my-score">
+              이번 점수{" "}
+              <strong className="ranking-my-score-num">{score}</strong>
+            </p>
+            <div className="ranking-board">
+              {medals.map((m, i) => {
+                const row = topRankings?.[i];
+                return (
+                  <div key={i} className="ranking-row">
+                    <span className="ranking-medal" aria-hidden>
+                      {m}
+                    </span>
+                    <div className="ranking-row-text">
+                      <span className="ranking-name">
+                        {topRankings === null ? "…" : row?.nickname ?? "—"}
+                      </span>
+                      <span className="ranking-pts">
+                        {topRankings === null
+                          ? ""
+                          : row !== undefined
+                            ? `${row.score}`
+                            : "—"}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            <p className="modal-desc">닉네임을 입력하고 랭킹을 등록하세요!</p>
+            <p className="ranking-hint">
+              닉네임을 입력하고 랭킹에 등록할 수 있어요.
+            </p>
             <input
-              className="nickname-input"
+              className="nickname-input ranking-nickname"
               type="text"
               placeholder="닉네임 입력"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               maxLength={10}
+              disabled={registerSubmitting || registerDone}
             />
-            <div className="modal-buttons">
+            {registerError && (
+              <p className="ranking-register-msg ranking-register-msg--error">
+                {registerError}
+              </p>
+            )}
+            {registerDone && (
+              <p className="ranking-register-msg ranking-register-msg--ok">
+                등록되었습니다.
+              </p>
+            )}
+            <div className="modal-buttons ranking-modal-actions">
               <button className="btn-secondary" onClick={handleRestart}>
                 나가기
               </button>
-              <button className="btn-primary" disabled={!nickname.trim()}>
-                등록하기
+              <button
+                className="btn-primary"
+                type="button"
+                onClick={handleSubmitRanking}
+                disabled={
+                  !nickname.trim() ||
+                  registerSubmitting ||
+                  registerDone
+                }
+              >
+                {registerSubmitting ? "등록 중…" : "등록하기"}
               </button>
             </div>
           </div>

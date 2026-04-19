@@ -318,6 +318,138 @@
   font-family: sans-serif;
 }
 
+/* ── 랭킹 모달 (피그마: 흰 카드 + 메달 3줄) ── */
+.ranking-modal-overlay {
+  align-items: center;
+  justify-content: center;
+}
+
+.ranking-modal {
+  position: relative;
+  width: min(360px, 90vw);
+  background: #f8f8f8;
+  border-radius: 16px;
+  padding: 28px 22px 22px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  color: #1a1a1a;
+}
+
+.ranking-close {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  color: #444;
+  border-radius: 8px;
+}
+.ranking-close:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.ranking-modal-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  text-align: center;
+  color: #111;
+  margin-top: 8px;
+}
+
+.ranking-my-score {
+  text-align: center;
+  font-size: 13px;
+  font-family: sans-serif;
+  color: #333;
+}
+.ranking-my-score-num {
+  color: #c53030;
+  font-size: 18px;
+}
+
+.ranking-board {
+  background: #d4d4d4;
+  border-radius: 10px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ranking-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ranking-medal {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.ranking-row-text {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-height: 40px;
+}
+
+.ranking-name {
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.ranking-pts {
+  font-family: "Press Start 2P", monospace;
+  font-size: 9px;
+  color: #555;
+}
+
+.ranking-hint {
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.ranking-nickname {
+  background: #fff;
+  border-color: #ccc;
+  color: #111;
+}
+
+.ranking-modal-actions {
+  margin-top: 4px;
+}
+
+.ranking-register-msg {
+  font-size: 12px;
+  text-align: center;
+  font-family: sans-serif;
+  margin: -4px 0 0;
+}
+.ranking-register-msg--error {
+  color: #c53030;
+}
+.ranking-register-msg--ok {
+  color: #276749;
+}
+
 .nickname-input {
   width: 100%;
   padding: 12px;
