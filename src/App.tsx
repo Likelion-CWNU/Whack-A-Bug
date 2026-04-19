@@ -36,11 +36,11 @@ function getStageFromScore(score: number): Stage {
 }
 
 const STAGE_TIMING: Record<Stage, StageTiming> = {
-  1: { visibleMin: 850, visibleMax: 1150, hiddenMin: 250, hiddenMax: 900 },
-  2: { visibleMin: 750, visibleMax: 1000, hiddenMin: 220, hiddenMax: 800 },
-  3: { visibleMin: 700, visibleMax: 950, hiddenMin: 200, hiddenMax: 700 },
-  4: { visibleMin: 650, visibleMax: 900, hiddenMin: 180, hiddenMax: 600 },
-  5: { visibleMin: 600, visibleMax: 850, hiddenMin: 150, hiddenMax: 500 },
+  1: { visibleMin: 900, visibleMax: 1200, hiddenMin: 250, hiddenMax: 900 },
+  2: { visibleMin: 800, visibleMax: 1100, hiddenMin: 220, hiddenMax: 800 },
+  3: { visibleMin: 750, visibleMax: 1000, hiddenMin: 200, hiddenMax: 700 },
+  4: { visibleMin: 700, visibleMax: 950, hiddenMin: 180, hiddenMax: 600 },
+  5: { visibleMin: 650, visibleMax: 900, hiddenMin: 150, hiddenMax: 500 },
 };
 
 const randomBetween = (min: number, max: number) =>
@@ -121,6 +121,7 @@ function App() {
         hideTimeout = setTimeout(() => {
           if (cancelled) return;
           setActiveMoleIndex((prev) => {
+            if (cancelled) return null;
             if (prev !== null) {
               setLives((l) => {
                 const next = l - 1;
