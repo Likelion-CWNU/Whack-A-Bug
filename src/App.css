@@ -79,27 +79,42 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
   position: relative;
 }
 
 .play-btn {
   background: none;
   border: none;
+  outline: none;
+  box-shadow: none;
   cursor: pointer;
   padding: 0;
   transition: transform 0.1s;
 }
 .play-btn:hover {
   transform: scale(1.05);
+  box-shadow: none;
 }
 .play-btn:active {
   transform: scale(0.95);
+  box-shadow: none;
 }
 
 .play-btn-img {
-  width: 180px;
+  width: 200px;
   object-fit: contain;
+  display: block;
+}
+
+/* 버튼 위치 - 언덕 위로 올리기 */
+.main-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  /* 언덕 높이(42%)만큼 패딩 줘서 버튼이 언덕 위 공간 중앙에 오게 */
+  padding-bottom: 42%;
 }
 
 /* ── 타임바 ── */
@@ -192,7 +207,7 @@
 }
 
 .modal-box {
-  background: #111;
+  background: black;
   border: 3px solid #fff;
   padding: 36px 32px;
   width: min(400px, 88vw);
@@ -200,7 +215,6 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  box-shadow: 8px 8px 0 #000;
   color: white;
 }
 
@@ -269,7 +283,6 @@
   font-family: "Press Start 2P", monospace;
   font-size: 9px;
   cursor: pointer;
-  box-shadow: 4px 4px 0 #7a0000;
   letter-spacing: 1px;
   transition: transform 0.08s, box-shadow 0.08s;
 }

@@ -1,16 +1,25 @@
 import EffectCell from "./components/EffectCell";
 import { useEffect, useMemo, useRef, useState } from "react";
+import playImg from "./assets/play.png";
 import heartFull from "./assets/heart_full.png";
 import heartEmpty from "./assets/heart_empty.png";
 import devilImg from "./assets/devil.png";
-import playImg from "./assets/play.png";
 import "./App.css";
 
 const BOARD_SIZE = 9;
 
 type Screen = "main" | "photo-modal" | "game" | "result-modal";
 
-function getStageFromScore(score: number): 1 | 2 | 3 | 4 | 5 {
+type Stage = 1 | 2 | 3 | 4 | 5;
+
+type StageTiming = {
+  visibleMin: number;
+  visibleMax: number;
+  hiddenMin: number;
+  hiddenMax: number;
+};
+
+function getStageFromScore(score: number): Stage {
   if (score >= 200) return 5;
   if (score >= 150) return 4;
   if (score >= 100) return 3;
@@ -18,15 +27,7 @@ function getStageFromScore(score: number): 1 | 2 | 3 | 4 | 5 {
   return 1;
 }
 
-const STAGE_TIMING: Record<
-  1 | 2 | 3 | 4 | 5,
-  {
-    visibleMin: number;
-    visibleMax: number;
-    hiddenMin: number;
-    hiddenMax: number;
-  }
-> = {
+const STAGE_TIMING: Record<Stage, StageTiming> = {
   1: { visibleMin: 850, visibleMax: 1150, hiddenMin: 250, hiddenMax: 900 },
   2: { visibleMin: 750, visibleMax: 1000, hiddenMin: 220, hiddenMax: 800 },
   3: { visibleMin: 700, visibleMax: 950, hiddenMin: 200, hiddenMax: 700 },
@@ -54,6 +55,7 @@ function Hearts({ lives = 3 }: { lives?: number }) {
 
 function App() {
   const [score, setScore] = useState(0);
+  const [lives, setLives] = useState(3);
   const [timeLeft, setTimeLeft] = useState(180);
   const [isRunning, setIsRunning] = useState(false);
   const [activeMoleIndex, setActiveMoleIndex] = useState<number | null>(null);
@@ -70,6 +72,7 @@ function App() {
     setActiveMoleIndex(null);
   };
 
+  // 타이머
   useEffect(() => {
     if (!isRunning) return;
     const timer = setInterval(() => {
@@ -85,6 +88,7 @@ function App() {
     return () => clearInterval(timer);
   }, [isRunning]);
 
+  // 두더지 스케줄러
   useEffect(() => {
     if (!isRunning) return;
     let cancelled = false;
@@ -104,11 +108,24 @@ function App() {
         );
         hideTimeout = setTimeout(() => {
           if (cancelled) return;
-          setActiveMoleIndex(null);
+          setActiveMoleIndex((prev) => {
+            if (prev !== null) {
+              setLives((l) => {
+                const next = l - 1;
+                if (next <= 0) {
+                  setIsRunning(false);
+                  setScreen("result-modal");
+                }
+                return next;
+              });
+            }
+            return null;
+          });
           scheduleMole();
         }, visibleDelay);
       }, hiddenDelay);
     };
+
     scheduleMole();
     return () => {
       cancelled = true;
@@ -117,16 +134,9 @@ function App() {
     };
   }, [isRunning, stage]);
 
-  const startGame = () => {
-    if (timeLeft <= 0) {
-      setTimeLeft(180);
-      setScore(0);
-    }
-    setIsRunning(true);
-  };
-
   const resetGame = () => {
     setScore(0);
+    setLives(3);
     setTimeLeft(180);
     setIsRunning(false);
     setActiveMoleIndex(null);
@@ -141,7 +151,7 @@ function App() {
   const handleStartGame = () => {
     resetGame();
     setScreen("game");
-    startGame();
+    setIsRunning(true);
   };
 
   const handleRestart = () => {
@@ -152,6 +162,7 @@ function App() {
   };
 
   // ── 메인 화면 ──
+  // 메인 화면
   if (screen === "main") {
     return (
       <div className="game-container main-screen">
@@ -159,7 +170,6 @@ function App() {
           <span className="score-display">Score: 0</span>
           <Hearts />
         </div>
-        <img src={devilImg} alt="devil" className="devil-img" />
         <div className="main-center">
           <button className="play-btn" onClick={() => setScreen("photo-modal")}>
             <img src={playImg} alt="PLAY" className="play-btn-img" />
@@ -228,7 +238,7 @@ function App() {
       <div className="game-container game-screen">
         <header className="game-header">
           <span className="score-display">Score: {score}</span>
-          <Hearts />
+          <Hearts lives={lives} />
         </header>
         <div className="time-bar-wrap">
           <div
@@ -237,8 +247,6 @@ function App() {
           />
         </div>
         <img src={devilImg} alt="devil" className="devil-img" />
-
-        {/* 언덕 + 구멍 그리드 */}
         <div className="main-ground" />
         <div className="game-field">
           <div className="holes-grid">
@@ -252,8 +260,7 @@ function App() {
             ))}
           </div>
         </div>
-
-        <button className="reset-btn" onClick={resetGame}>
+        <button className="reset-btn" onClick={handleRestart}>
           다시하기
         </button>
       </div>
