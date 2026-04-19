@@ -180,17 +180,19 @@ function App() {
     );
   }
 
-  // ── 교수님 사진 팝업 ──
   if (screen === "photo-modal") {
     return (
       <div className="game-container main-screen">
+        <div className="main-top">
+          {" "}
+          {/* ← 추가 */}
+          <span className="score-display">Score: 0</span>
+          <Hearts />
+        </div>
         <div className="main-ground" />
         <div className="modal-overlay">
           <div className="modal-box">
-            <h2 className="modal-title">교수님 사진 등록</h2>
-            <p className="modal-desc">
-              두더지에 적용될 교수님 사진을 올려주세요!
-            </p>
+            <p className="modal-desc">교수님 사진을 등록해주세요.</p>
             <div
               className="photo-upload-area"
               onClick={() => fileInputRef.current?.click()}
@@ -203,8 +205,18 @@ function App() {
                 />
               ) : (
                 <div className="photo-placeholder">
-                  <span style={{ fontSize: "32px" }}>📷</span>
-                  <span>클릭해서 사진 선택</span>
+                  <svg
+                    width="38"
+                    height="38"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#555"
+                    strokeWidth="1.5"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="M21 15l-5-5L5 21" />
+                  </svg>
                 </div>
               )}
             </div>
@@ -215,17 +227,9 @@ function App() {
               style={{ display: "none" }}
               onChange={handlePhotoUpload}
             />
-            <div className="modal-buttons">
-              <button
-                className="btn-secondary"
-                onClick={() => setScreen("main")}
-              >
-                취소
-              </button>
-              <button className="btn-primary" onClick={handleStartGame}>
-                게임 시작!
-              </button>
-            </div>
+            <button className="btn-primary" onClick={handleStartGame}>
+              확인
+            </button>
           </div>
         </div>
       </div>

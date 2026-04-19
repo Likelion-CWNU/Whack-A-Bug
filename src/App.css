@@ -1,7 +1,16 @@
-* {
+* * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: #000;
 }
 
 .game-container {
@@ -199,7 +208,7 @@
 .modal-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,49 +216,49 @@
 }
 
 .modal-box {
-  background: black;
-  border: 3px solid #fff;
-  padding: 36px 32px;
-  width: min(400px, 88vw);
+  background: #efefef;
+  padding: 25px 20px;
+  width: min(300px, 88vw);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  color: white;
+  gap: 12px;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+  border-radius: 10px;
 }
 
 .modal-title {
   font-family: "Press Start 2P", monospace;
-  font-size: 14px;
-  color: white;
+  font-size: 20px;
   text-align: center;
   line-height: 1.8;
 }
 
 .modal-desc {
-  font-size: 11px;
-  color: #aaa;
+  font-size: 17px;
+  color: black;
   text-align: center;
   font-family: sans-serif;
   line-height: 1.6;
 }
 
 .photo-upload-area {
-  width: 150px;
-  height: 150px;
-  border: 3px dashed #555;
-  border-radius: 50%;
+  width: 85%;
+  height: 160px;
+  border: 2px dashed #555;
+  border-radius: 10px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   overflow: hidden;
-  background: #0a0a0a;
+  background: #eeeeee;
   transition: border-color 0.2s;
 }
 .photo-upload-area:hover {
-  border-color: #fff;
+  border-color: #d8d8d8;
 }
 
 .photo-preview {
@@ -264,31 +273,33 @@
   align-items: center;
   gap: 8px;
   color: #555;
-  font-size: 11px;
+  font-size: 10px;
   font-family: sans-serif;
 }
 
 .modal-buttons {
   display: flex;
   gap: 12px;
-  width: 100%;
+  width: 80%;
 }
 
 .btn-primary {
-  flex: 1;
+  width: 50%;
   padding: 12px;
   background: #e53e3e;
   color: white;
   border: none;
+  box-shadow: none;
   font-family: "Press Start 2P", monospace;
-  font-size: 9px;
+  font-size: 12px;
   cursor: pointer;
-  letter-spacing: 1px;
-  transition: transform 0.08s, box-shadow 0.08s;
+  letter-spacing: 2px;
+  border-radius: 4px;
 }
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 6px 6px 0 #7a0000;
+  opacity: 0.9;
+  transform: none;
+  box-shadow: none;
 }
 .btn-primary:disabled {
   background: #444;
