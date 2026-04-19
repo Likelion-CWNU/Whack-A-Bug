@@ -1,7 +1,9 @@
 import EffectCell from "./components/EffectCell";
 import { useEffect, useMemo, useRef, useState } from "react";
-import heartFull from "./assets/heart_full.svg";
-import heartEmpty from "./assets/heart_empty.svg";
+import heartFull from "./assets/heart_full.png";
+import heartEmpty from "./assets/heart_empty.png";
+import devilImg from "./assets/devil.png";
+import playImg from "./assets/play.png";
 import "./App.css";
 
 const BOARD_SIZE = 9;
@@ -35,7 +37,6 @@ const STAGE_TIMING: Record<
 const randomBetween = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
-// 하트 컴포넌트
 function Hearts({ lives = 3 }: { lives?: number }) {
   return (
     <div className="hearts">
@@ -158,9 +159,10 @@ function App() {
           <span className="score-display">Score: 0</span>
           <Hearts />
         </div>
+        <img src={devilImg} alt="devil" className="devil-img" />
         <div className="main-center">
           <button className="play-btn" onClick={() => setScreen("photo-modal")}>
-            PLAY
+            <img src={playImg} alt="PLAY" className="play-btn-img" />
           </button>
         </div>
         <div className="main-ground" />
@@ -234,41 +236,26 @@ function App() {
             style={{ width: `${(timeLeft / 180) * 100}%` }}
           />
         </div>
-        <main
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "10px",
-            maxWidth: "300px",
-            margin: "0 auto",
-          }}
-        >
-          {[...Array(BOARD_SIZE)].map((_, i) => (
-            <EffectCell
-              key={i}
-              onHit={() => handleScore(i)}
-              isActive={isRunning && activeMoleIndex === i}
-              professorPhoto={professorPhoto}
-            />
-          ))}
-        </main>
-        <footer style={{ marginTop: "30px" }}>
-          <button
-            onClick={resetGame}
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#3182ce",
-              borderRadius: "5px",
-              border: "none",
-              color: "white",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            다시하기
-          </button>
-        </footer>
+        <img src={devilImg} alt="devil" className="devil-img" />
+
+        {/* 언덕 + 구멍 그리드 */}
         <div className="main-ground" />
+        <div className="game-field">
+          <div className="holes-grid">
+            {[...Array(BOARD_SIZE)].map((_, i) => (
+              <EffectCell
+                key={i}
+                onHit={() => handleScore(i)}
+                isActive={isRunning && activeMoleIndex === i}
+                professorPhoto={professorPhoto}
+              />
+            ))}
+          </div>
+        </div>
+
+        <button className="reset-btn" onClick={resetGame}>
+          다시하기
+        </button>
       </div>
     );
   }
