@@ -97,12 +97,12 @@ export const subscribeToRankings = (
 };
 
 // 내 랭킹 순위 계산
-export const getMyRank = async (myScore: number, professorId?: string): Promise<number> => {
+export const getMyRank = async (myScore: number, _professorId?: string): Promise<number> => {
   const q = query(
     collection(db, COLLECTION),
-    ...(professorId ? [where('professorId', '==', professorId)] : []),
-    where('score', '>', myScore)
+    orderBy('score', 'desc')
   );
   const snapshot = await getDocs(q);
-  return snapshot.size + 1;
+  const rank = snapshot.docs.findIndex(doc => doc.data().score <= myScore);
+  return rank === -1 ? snapshot.size + 1 : rank + 1;
 };
