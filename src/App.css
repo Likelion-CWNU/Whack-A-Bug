@@ -521,6 +521,9 @@ body {
 
 .ranking-modal-actions {
   margin-top: 4px;
+  display: flex;
+  gap: 12px;
+  width: 100%;
 }
 
 .ranking-register-msg {
