@@ -219,7 +219,7 @@ body {
 }
 
 .modal-desc {
-  font-size: 13px;
+  font-size: 10px;
   color: #333;
   text-align: center;
   font-family: sans-serif;
@@ -290,12 +290,11 @@ body {
 .btn-secondary {
   flex: 1;
   padding: 10px;
-  background: #555;
   color: white;
   border: none;
   box-shadow: none;
   font-family: "Press Start 2P", monospace;
-  font-size: 11px;
+  font-size: 15px;
   cursor: pointer;
   letter-spacing: 2px;
   border-radius: 4px;
