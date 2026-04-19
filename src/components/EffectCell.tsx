@@ -2,21 +2,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import mole from "../assets/mole.png";
 
-// 1. professorPhoto 추가
 type Props = {
   onHit: () => void;
   isActive: boolean;
+  professorPhoto?: string | null;
 };
 
 const LABELS = ["재수강!", "과락!", "F!", "성적 공개!", "과제 추가!"];
 
-export default function EffectCell({ onHit, isActive }: Props) {
+export default function EffectCell({ onHit, isActive, professorPhoto }: Props) {
   const [hit, setHit] = useState(false);
   const [label, setLabel] = useState("");
 
   const handleClick = () => {
     if (!isActive) return;
-
     const randomLabel = LABELS[Math.floor(Math.random() * LABELS.length)];
     setLabel(randomLabel);
     setHit(true);
@@ -63,11 +62,11 @@ export default function EffectCell({ onHit, isActive }: Props) {
         )}
       </AnimatePresence>
 
-      {/* 두더지 */}
+      {/* 두더지 or 교수님 사진 */}
       <AnimatePresence>
         {isActive && (
           <motion.img
-            src={mole}
+            src={professorPhoto ?? mole}
             alt="mole"
             initial={{ y: 12, opacity: 0 }}
             animate={{
@@ -83,12 +82,14 @@ export default function EffectCell({ onHit, isActive }: Props) {
             style={{
               width: "58px",
               height: "58px",
-              objectFit: "contain",
+              objectFit: "cover",
               pointerEvents: "none",
               userSelect: "none",
               position: "relative",
               zIndex: 2,
               filter: hit ? "brightness(0.85) contrast(1.15)" : "none",
+              borderRadius: professorPhoto ? "50%" : "0",
+              border: professorPhoto ? "2px solid white" : "none",
             }}
             draggable={false}
           />

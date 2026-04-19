@@ -1,10 +1,13 @@
 import EffectCell from "./components/EffectCell";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import heartFull from "./assets/heart_full.svg";
+import heartEmpty from "./assets/heart_empty.svg";
 import "./App.css";
 
 const BOARD_SIZE = 9;
 
-/** 점수 구간별 스테이지 (임시: 50·100·150·200 돌파 시 +1) */
+type Screen = "main" | "photo-modal" | "game" | "result-modal";
+
 function getStageFromScore(score: number): 1 | 2 | 3 | 4 | 5 {
   if (score >= 200) return 5;
   if (score >= 150) return 4;
@@ -13,10 +16,14 @@ function getStageFromScore(score: number): 1 | 2 | 3 | 4 | 5 {
   return 1;
 }
 
-/** 스테이지별 두더지 보이는 시간 / 숨는 시간(ms) — 상위 스테이지일수록 짧게(어렵게) */
 const STAGE_TIMING: Record<
   1 | 2 | 3 | 4 | 5,
-  { visibleMin: number; visibleMax: number; hiddenMin: number; hiddenMax: number }
+  {
+    visibleMin: number;
+    visibleMax: number;
+    hiddenMin: number;
+    hiddenMax: number;
+  }
 > = {
   1: { visibleMin: 850, visibleMax: 1150, hiddenMin: 250, hiddenMax: 900 },
   2: { visibleMin: 750, visibleMax: 1000, hiddenMin: 220, hiddenMax: 800 },
@@ -28,12 +35,31 @@ const STAGE_TIMING: Record<
 const randomBetween = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
+// 하트 컴포넌트
+function Hearts({ lives = 3 }: { lives?: number }) {
+  return (
+    <div className="hearts">
+      {[...Array(3)].map((_, i) => (
+        <img
+          key={i}
+          src={i < lives ? heartFull : heartEmpty}
+          alt="heart"
+          className="heart-img"
+        />
+      ))}
+    </div>
+  );
+}
+
 function App() {
-  // ── 기존 코드 그대로 ──
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(180);
   const [isRunning, setIsRunning] = useState(false);
   const [activeMoleIndex, setActiveMoleIndex] = useState<number | null>(null);
+  const [screen, setScreen] = useState<Screen>("main");
+  const [professorPhoto, setProfessorPhoto] = useState<string | null>(null);
+  const [nickname, setNickname] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const stage = useMemo(() => getStageFromScore(score), [score]);
 
@@ -49,7 +75,7 @@ function App() {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           setIsRunning(false);
-          setScreen("result-modal"); // 시간 종료 → 결과 화면
+          setScreen("result-modal");
           return 0;
         }
         return prev - 1;
@@ -59,27 +85,22 @@ function App() {
   }, [isRunning]);
 
   useEffect(() => {
-    if (!isRunning) {
-      setActiveMoleIndex(null);
-      return;
-    }
-
+    if (!isRunning) return;
     let cancelled = false;
     let showTimeout: ReturnType<typeof setTimeout> | null = null;
     let hideTimeout: ReturnType<typeof setTimeout> | null = null;
-
     const timing = STAGE_TIMING[stage];
 
     const scheduleMole = () => {
       if (cancelled) return;
-
       const hiddenDelay = randomBetween(timing.hiddenMin, timing.hiddenMax);
       showTimeout = setTimeout(() => {
         if (cancelled) return;
-
         setActiveMoleIndex(Math.floor(Math.random() * BOARD_SIZE));
-
-        const visibleDelay = randomBetween(timing.visibleMin, timing.visibleMax);
+        const visibleDelay = randomBetween(
+          timing.visibleMin,
+          timing.visibleMax
+        );
         hideTimeout = setTimeout(() => {
           if (cancelled) return;
           setActiveMoleIndex(null);
@@ -87,9 +108,7 @@ function App() {
         }, visibleDelay);
       }, hiddenDelay);
     };
-
     scheduleMole();
-
     return () => {
       cancelled = true;
       if (showTimeout) clearTimeout(showTimeout);
@@ -112,72 +131,127 @@ function App() {
     setActiveMoleIndex(null);
   };
 
-  return (
-    <div
-      className="game-container"
-      style={{
-        textAlign: "center",
-        backgroundColor: "#1a202c",
-        color: "white",
-        minHeight: "screen",
-        padding: "20px",
-      }}
-    >
-      <header>
-        <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>Whack-A-Bug 🎓</h1>
-        <div
-          className="status"
-          style={{ margin: "20px 0", fontSize: "1.2rem" }}
-        >
-          <p>
-            현재 점수: <span style={{ color: "#ecc94b" }}>{score}</span>
-          </p>
-          <p>
-            스테이지:{" "}
-            <span style={{ color: "#63b3ed" }}>
-              {stage} / 5
-            </span>
-          </p>
-          <p>남은 시간: {timeLeft}초</p>
-          {!isRunning && timeLeft > 0 && (
-            <button
-              onClick={startGame}
-              style={{
-                marginTop: "12px",
-                marginRight: "8px",
-                padding: "10px 20px",
-                backgroundColor: "#16a34a",
-                borderRadius: "5px",
-                border: "none",
-                color: "white",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              게임 시작
-            </button>
-          )}
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setProfessorPhoto(URL.createObjectURL(file));
+  };
+
+  const handleStartGame = () => {
+    resetGame();
+    setScreen("game");
+    startGame();
+  };
+
+  const handleRestart = () => {
+    resetGame();
+    setProfessorPhoto(null);
+    setNickname("");
+    setScreen("main");
+  };
+
+  // ── 메인 화면 ──
+  if (screen === "main") {
+    return (
+      <div className="game-container main-screen">
+        <div className="main-top">
+          <span className="score-display">Score: 0</span>
+          <Hearts />
         </div>
-      </header>
+        <div className="main-center">
+          <button className="play-btn" onClick={() => setScreen("photo-modal")}>
+            PLAY
+          </button>
+        </div>
+        <div className="main-ground" />
+      </div>
+    );
+  }
 
-      <main
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "10px",
-          maxWidth: "300px",
-          margin: "0 auto",
-        }}
-      >
-        {[...Array(BOARD_SIZE)].map((_, i) => (
-          <EffectCell
-            key={i}
-            onHit={() => handleScore(i)}
-            isActive={isRunning && activeMoleIndex === i}
+  // ── 교수님 사진 팝업 ──
+  if (screen === "photo-modal") {
+    return (
+      <div className="game-container main-screen">
+        <div className="main-ground" />
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h2 className="modal-title">교수님 사진 등록</h2>
+            <p className="modal-desc">
+              두더지에 적용될 교수님 사진을 올려주세요!
+            </p>
+            <div
+              className="photo-upload-area"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {professorPhoto ? (
+                <img
+                  src={professorPhoto}
+                  alt="professor"
+                  className="photo-preview"
+                />
+              ) : (
+                <div className="photo-placeholder">
+                  <span style={{ fontSize: "32px" }}>📷</span>
+                  <span>클릭해서 사진 선택</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handlePhotoUpload}
+            />
+            <div className="modal-buttons">
+              <button
+                className="btn-secondary"
+                onClick={() => setScreen("main")}
+              >
+                취소
+              </button>
+              <button className="btn-primary" onClick={handleStartGame}>
+                게임 시작!
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── 게임 화면 ──
+  if (screen === "game") {
+    return (
+      <div className="game-container game-screen">
+        <header className="game-header">
+          <span className="score-display">Score: {score}</span>
+          <Hearts />
+        </header>
+        <div className="time-bar-wrap">
+          <div
+            className="time-bar"
+            style={{ width: `${(timeLeft / 180) * 100}%` }}
           />
-        ))}
-      </main>
-
+        </div>
+        <main
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "10px",
+            maxWidth: "300px",
+            margin: "0 auto",
+          }}
+        >
+          {[...Array(BOARD_SIZE)].map((_, i) => (
+            <EffectCell
+              key={i}
+              onHit={() => handleScore(i)}
+              isActive={isRunning && activeMoleIndex === i}
+              professorPhoto={professorPhoto}
+            />
+          ))}
+        </main>
         <footer style={{ marginTop: "30px" }}>
           <button
             onClick={resetGame}
@@ -194,7 +268,6 @@ function App() {
             다시하기
           </button>
         </footer>
-
         <div className="main-ground" />
       </div>
     );
