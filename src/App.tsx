@@ -121,6 +121,7 @@ function App() {
         hideTimeout = setTimeout(() => {
           if (cancelled) return;
           setActiveMoleIndex((prev) => {
+            if (cancelled) return null;
             if (prev !== null) {
               setLives((l) => {
                 const next = l - 1;
