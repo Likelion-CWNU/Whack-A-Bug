@@ -246,7 +246,7 @@ function App() {
         <div className="main-ground" />
         <div className="modal-overlay">
           <div className="modal-box">
-            <h2 className="modal-title">교수님 사진 등록</h2>
+            <h2 className="modal-title">사진등록</h2>
             <p className="modal-desc">
               두더지에 적용될 교수님 사진을 올려주세요
             </p>

@@ -10,7 +10,6 @@ body {
   padding: 0;
   border: none;
   outline: none;
-  background: #000;
 }
 
 .game-container {
@@ -23,27 +22,25 @@ body {
   font-family: "Press Start 2P", monospace;
 }
 
-/* ── 배경 ── */
 .main-screen {
   background: #efefef;
 }
+
 .game-screen {
-  background: #c8eaf5;
+  background: #d6f6fe;
 }
 
-/* ── 언덕 ── */
 .main-ground {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 48%;
-  background: #3a8c3f;
+  height: 55%; /* 42% → 55% */
+  background: #439658;
   border-radius: 100% 100% 0 0 / 80px 80px 0 0;
   z-index: 0;
 }
 
-/* ── 상단 바 ── */
 .main-top,
 .game-header {
   display: flex;
@@ -55,10 +52,9 @@ body {
 }
 
 .score-display {
-  font-size: 16px;
-  font-weight: bold;
-  color: #111;
-  font-family: "Press Start 2P", monospace;
+  font-size: 13px;
+  color: black;
+  letter-spacing: 1px;
 }
 
 .hearts {
@@ -67,28 +63,30 @@ body {
 }
 
 .heart-img {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
 }
 
-/* ── 악마 캐릭터 ── */
 .devil-img {
   position: absolute;
-  top: 60px;
+  top: 150px;
   left: 50%;
   transform: translateX(-50%);
-  width: 160px;
+  width: clamp(200px, 30vw, 340px); /* 크기 키움 */
   z-index: 5;
 }
 
-/* ── PLAY 버튼 이미지 ── */
 .main-center {
-  flex: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 42%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  z-index: 10;
 }
 
 .play-btn {
@@ -102,36 +100,22 @@ body {
 }
 .play-btn:hover {
   transform: scale(1.05);
-  box-shadow: none;
 }
 .play-btn:active {
   transform: scale(0.95);
-  box-shadow: none;
 }
 
 .play-btn-img {
-  width: 200px;
+  width: clamp(120px, 18vw, 220px);
   object-fit: contain;
   display: block;
 }
 
-/* 버튼 위치 - 언덕 위로 올리기 */
-.main-center {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  /* 언덕 높이(42%)만큼 패딩 줘서 버튼이 언덕 위 공간 중앙에 오게 */
-  padding-bottom: 42%;
-}
-
-/* ── 타임바 ── */
 .time-bar-wrap {
-  height: 8px;
+  height: 6px;
   background: #333;
-  margin: 0 28px 12px;
-  border-radius: 4px;
+  margin: 0 28px 16px;
+  border-radius: 3px;
   overflow: hidden;
   z-index: 10;
   position: relative;
@@ -142,13 +126,12 @@ body {
   transition: width 1s linear;
 }
 
-/* ── 게임 그리드 영역 ── */
 .game-field {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 70%;
+  height: 60%; /* 72% → 60% */
   z-index: 5;
   display: flex;
   align-items: center;
@@ -157,17 +140,16 @@ body {
 
 .holes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 110px);
-  grid-template-rows: repeat(3, 100px);
-  gap: 8px 24px;
+  grid-template-columns: repeat(3, 160px);
+  grid-template-rows: repeat(3, 140px);
+  gap: 16px 32px;
   margin-bottom: 20px;
 }
 
-/* ── 구멍 + 두더지 셀 ── */
 .cell-wrapper {
   position: relative;
-  width: 110px;
-  height: 100px;
+  width: 160px;
+  height: 140px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -183,13 +165,12 @@ body {
 
 .mole-wrapper {
   position: absolute;
-  bottom: 18px;
+  bottom: 45px;
   z-index: 2;
   display: flex;
   justify-content: center;
 }
 
-/* ── 다시하기 버튼 ── */
 .reset-btn {
   position: absolute;
   bottom: 20px;
@@ -199,12 +180,12 @@ body {
   border-radius: 5px;
   border: none;
   color: white;
-  font-weight: bold;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
   cursor: pointer;
   z-index: 20;
 }
 
-/* ── 모달 ── */
 .modal-overlay {
   position: absolute;
   inset: 0;
@@ -217,48 +198,49 @@ body {
 
 .modal-box {
   background: #efefef;
-  padding: 25px 20px;
-  width: min(300px, 88vw);
+  padding: 24px 20px;
+  width: min(280px, 88vw);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  box-shadow: none !important;
-  border: none !important;
-  outline: none !important;
-  border-radius: 10px;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  border-radius: 8px;
 }
 
 .modal-title {
   font-family: "Press Start 2P", monospace;
-  font-size: 20px;
+  font-size: 11px;
+  color: #111;
   text-align: center;
   line-height: 1.8;
 }
 
 .modal-desc {
-  font-size: 17px;
-  color: black;
+  font-size: 13px;
+  color: #333;
   text-align: center;
   font-family: sans-serif;
   line-height: 1.6;
 }
 
 .photo-upload-area {
-  width: 85%;
-  height: 130px;
-  border: 2px dashed #555;
+  width: 100%;
+  height: 120px;
+  border: 2px dashed #aaa;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   overflow: hidden;
-  background: #eeeeee;
+  background: #e8e8e8;
   transition: border-color 0.2s;
 }
 .photo-upload-area:hover {
-  border-color: #d8d8d8;
+  border-color: #555;
 }
 
 .photo-preview {
@@ -273,37 +255,35 @@ body {
   align-items: center;
   gap: 8px;
   color: #555;
-  font-size: 10px;
+  font-size: 11px;
   font-family: sans-serif;
 }
 
 .modal-buttons {
   display: flex;
   gap: 12px;
-  width: 80%;
+  width: 100%;
 }
 
 .btn-primary {
-  width: 50%;
-  padding: 12px;
+  flex: 1;
+  padding: 10px;
   background: #e53e3e;
   color: white;
   border: none;
   box-shadow: none;
   font-family: "Press Start 2P", monospace;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
   letter-spacing: 2px;
   border-radius: 4px;
+  transition: opacity 0.15s;
 }
 .btn-primary:hover:not(:disabled) {
   opacity: 0.9;
-  transform: none;
-  box-shadow: none;
 }
 .btn-primary:disabled {
-  background: #444;
-  box-shadow: none;
+  background: #e53e3e;
   cursor: not-allowed;
 }
 
@@ -316,7 +296,7 @@ body {
   outline: none;
   box-shadow: none;
   font-family: "Press Start 2P", monospace;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
   letter-spacing: 2px;
   border-radius: 4px;
@@ -328,87 +308,27 @@ body {
 
 .result-score {
   font-size: 13px;
-  color: white;
+  color: #111;
   font-family: sans-serif;
 }
 
 .nickname-input {
   width: 100%;
   padding: 12px;
-  background: #0a0a0a;
-  border: 2px solid #444;
-  color: white;
+  background: #fff;
+  border: 2px solid #ccc;
+  color: #111;
   font-size: 14px;
   font-family: sans-serif;
   text-align: center;
   outline: none;
+  border-radius: 4px;
 }
 .nickname-input:focus {
   border-color: #e53e3e;
 }
 
-.devil-img {
-  position: absolute;
-  top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 140px;
-  z-index: 5;
-}
-
-.game-field {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 68%;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.holes-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 110px);
-  grid-template-rows: repeat(3, 100px);
-  gap: 12px 28px;
-  margin-bottom: 16px;
-}
-
-.cell-wrapper {
-  position: relative;
-  width: 110px;
-  height: 100px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.pit-img {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  object-fit: contain;
-  z-index: 1;
-}
-
-.reset-btn {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  padding: 10px 20px;
-  background: #3182ce;
-  border-radius: 5px;
-  border: none;
-  color: white;
-  font-family: "Press Start 2P", monospace;
-  font-size: 10px;
-  cursor: pointer;
-  z-index: 20;
-}
-
-/* ── 랭킹 모달 오버레이 ── */
+/* ── 랭킹 모달 ── */
 .ranking-modal-overlay {
   position: absolute;
   inset: 0;
@@ -453,7 +373,7 @@ body {
 
 .ranking-modal-title {
   font-family: "Press Start 2P", monospace;
-  font-size: 12px;
+  font-size: 20px;
   text-align: center;
   color: #111;
   margin-top: 8px;

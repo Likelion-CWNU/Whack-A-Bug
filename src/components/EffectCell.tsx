@@ -23,15 +23,13 @@ export default function EffectCell({ onHit, isActive, professorPhoto }: Props) {
     onHit();
     setTimeout(() => {
       setHit(false);
-    }, 260);
+    }, 400);
   };
 
   return (
     <div className="cell-wrapper" onClick={handleClick}>
-      {/* 구멍 이미지 */}
       <img src={pit} alt="pit" className="pit-img" />
 
-      {/* 두더지 or 교수님 사진 */}
       <AnimatePresence>
         {isActive && (
           <motion.div
@@ -41,29 +39,6 @@ export default function EffectCell({ onHit, isActive, professorPhoto }: Props) {
             exit={{ y: 30, opacity: 0 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
           >
-            {/* 충격파 */}
-            <AnimatePresence>
-              {hit && (
-                <motion.div
-                  key="impact-ring"
-                  initial={{ scale: 0.4, opacity: 0.7 }}
-                  animate={{ scale: 1.3, opacity: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.22, ease: "easeOut" }}
-                  style={{
-                    position: "absolute",
-                    width: "70px",
-                    height: "70px",
-                    border: "3px solid rgba(255,70,70,0.9)",
-                    borderRadius: "50%",
-                    top: 0,
-                    left: 0,
-                    pointerEvents: "none",
-                  }}
-                />
-              )}
-            </AnimatePresence>
-
             <motion.img
               src={professorPhoto ?? mole}
               alt="mole"
@@ -76,8 +51,8 @@ export default function EffectCell({ onHit, isActive, professorPhoto }: Props) {
               }}
               transition={{ duration: 0.18 }}
               style={{
-                width: "72px",
-                height: "72px",
+                width: "100px",
+                height: "100px",
                 objectFit: "cover",
                 pointerEvents: "none",
                 userSelect: "none",
@@ -87,36 +62,33 @@ export default function EffectCell({ onHit, isActive, professorPhoto }: Props) {
               }}
               draggable={false}
             />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            {/* 임팩트 텍스트 */}
-            <AnimatePresence>
-              {hit && (
-                <motion.div
-                  key={label}
-                  initial={{ opacity: 0, scale: 1.22, rotate: -12 }}
-                  animate={{ opacity: 0.95, scale: 1, rotate: -12 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
-                  style={{
-                    position: "absolute",
-                    top: "-8px",
-                    right: "-20px",
-                    fontSize: "10px",
-                    fontWeight: 900,
-                    color: "#dc2626",
-                    border: "2px solid #dc2626",
-                    padding: "3px 6px",
-                    borderRadius: "4px",
-                    backgroundColor: "rgba(255,255,255,0.85)",
-                    pointerEvents: "none",
-                    zIndex: 5,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {label}
-                </motion.div>
-              )}
-            </AnimatePresence>
+      <AnimatePresence>
+        {hit && (
+          <motion.div
+            key={label}
+            initial={{ opacity: 0, scale: 1.22, rotate: -12 }}
+            animate={{ opacity: 0.95, scale: 1, rotate: -12 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            style={{
+              position: "absolute",
+              top: "0px",
+              right: "-10px",
+              fontSize: "16px",
+              fontWeight: 900,
+              color: "#dc2626",
+              pointerEvents: "none",
+              zIndex: 10,
+              whiteSpace: "nowrap",
+              fontFamily: "sans-serif",
+              textShadow: "1px 1px 0 white, -1px -1px 0 white",
+            }}
+          >
+            {label}
           </motion.div>
         )}
       </AnimatePresence>
